@@ -85,7 +85,6 @@ def get_weather_data(location):
     return response.json()
 
     
-    
 async def main():
     print("Starting bot...")
     print("Bot username: @{}".format((await bot.me())))

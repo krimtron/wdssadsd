@@ -25,27 +25,19 @@ async def send_welcome(message: types.Message):
     await message.reply("Привіт! Я готовий перевіряти твої знання математики. Готовий до першого питання?(введіть 'я готовий')")
 
 
-    
-
-# Define states
 class States:
     START = 'start'
     LOCATION = 'location'
     RESULT = 'result'
-
-
-# Define keyboard
+    
 start_keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add(KeyboardButton('Get Weather'))
 
-
-# Start command handler
 @dp.message_handler(Command("start"), state="*")
 async def cmd_start(message: types.Message):
     await message.reply("Welcome to the Weather Bot! Type /cancel any time to stop.", reply_markup=start_keyboard)
     await States.START.set()
 
 
-# Start state handler
 @dp.message_handler(state=States.START)
 async def process_start(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
@@ -54,7 +46,6 @@ async def process_start(message: types.Message, state: FSMContext):
     await States.LOCATION.set()
 
 
-# Location state handler
 @dp.message_handler(state=States.LOCATION)
 async def process_location(message: types.Message, state: FSMContext):
     location = message.text
@@ -82,14 +73,11 @@ async def process_location(message: types.Message, state: FSMContext):
     await state.finish()
 
 
-# Result state handler
 @dp.message_handler(state=States.RESULT)
 async def process_result(message: types.Message, state: FSMContext):
     await message.reply("What would you like to do next?", reply_markup=start_keyboard)
     await States.START.set()
 
-
-# Function to get weather data from OpenWeatherMap API
 def get_weather_data(location):
     api_url = f"https://api.openweathermap.org/data/2.5/weather?q={location}&appid={OPENWEATHERMAP_API_KEY}"
     response = requests.get(api_url)
